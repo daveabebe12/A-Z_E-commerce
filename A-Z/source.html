@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Reebelo – Designer Bags, Sports, Tools & Fashion</title>
+
+  <style>
+    /* ── Reset ──────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+                   Helvetica, Arial, sans-serif;
+      background: #fff;
+      color: #1a1a1a;
+    }
+    a { text-decoration: none; color: inherit; }
+    ul { list-style: none; }
+    img { display: block; max-width: 100%; }
+
+    /* ── Design Tokens ──────────────────────────────────── */
+    :root {
+      --teal:        #2dd4bf;
+      --teal-dark:   #14b8a6;
+      --dark:        #1c2230;
+      --red-badge:   #e11d48;
+      --red-bg:      #fff1f2;
+      --gray-border: #e5e7eb;
+      --gray-bg:     #f9fafb;
+      --gray-text:   #6b7280;
+      --radius:      12px;
+      --shadow:      0 2px 16px rgba(0,0,0,.07);
+      --max-w:       1280px;
+    }
+
+    /* ── Page Wrapper ───────────────────────────────────── */
+    .page {
+      max-width: var(--max-w);
+      margin: 0 auto;
+      padding: 0 24px 80px;
+    }
+
+    /* ════════════════════════════════════════════════════════
+       SECTION HEADER
+    ════════════════════════════════════════════════════════ */
+    .section {
+      padding-top: 52px;
+    }
+    .section + .section {
+      border-top: 1px solid var(--gray-border);
+    }
+
+    .section__header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 22px;
+    }
+
+    .section__title {
+      font-size: 1.45rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      color: var(--dark);
+    }
+
+    .see-all {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: .88rem;
+      font-weight: 700;
+      color: var(--dark);
+      transition: gap .2s;
+    }
+    .see-all:hover { gap: 10px; }
+
+    /* ════════════════════════════════════════════════════════
+       CAROUSEL WRAPPER + TRACK + ARROW
+    ════════════════════════════════════════════════════════ */
+    .carousel-outer {
+      position: relative;
+    }
+
+    .carousel-track {
+      display: flex;
+      gap: 14px;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+      padding-bottom: 6px; /* room for shadow */
+    }
+    .carousel-track::-webkit-scrollbar { display: none; }
+
+    /* Next arrow */
+    .carousel-btn {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      right: -20px;
+      width: 46px;
+      height: 46px;
+      border-radius: 50%;
+      background: #fff;
+      border: 1.5px solid var(--gray-border);
+      box-shadow: var(--shadow);
+      cursor: pointer;
+      display: grid;
+      place-items: center;
+      font-size: 1.15rem;
+      color: var(--dark);
+      z-index: 10;
+      transition: background .2s, border-color .2s, color .2s;
+    }
+    .carousel-btn:hover {
+      background: var(--dark);
+      border-color: var(--dark);
+      color: #fff;
+    }
+
+    /* ════════════════════════════════════════════════════════
+       PRODUCT CARD  (shared by all four sections)
+    ════════════════════════════════════════════════════════ */
+    .product-card {
+      flex: 0 0 220px;
+      scroll-snap-align: start;
+      border: 1.5px solid var(--gray-border);
+      border-radius: var(--radius);
+      background: #fff;
+      display: flex;
+      flex-direction: column;
+      cursor: pointer;
+      transition: transform .2s, box-shadow .2s;
+      overflow: hidden;
+    }
+    .product-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow);
+    }
+
+    /* Badge row – keeps height even when no badge shown */
+    .card__badge-row {
+      padding: 10px 12px 0;
+      min-height: 32px;
+    }
+
+    .badge-flash {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: var(--red-bg);
+      color: var(--red-badge);
+      font-size: .71rem;
+      font-weight: 700;
+      padding: 4px 11px;
+      border-radius: 20px;
+    }
+
+    /* Image area */
+    .card__img-wrap {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 172px;
+      padding: 16px 20px;
+      background: #fff;    /* white bg so product images pop */
+    }
+    .card__img-wrap img {
+      max-height: 140px;
+      max-width: 100%;
+      object-fit: contain;
+    }
+
+    /* Body */
+    .card__body {
+      padding: 12px 14px 16px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .card__title {
+      font-size: .84rem;
+      font-weight: 600;
+      line-height: 1.45;
+      color: var(--dark);
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    /* Price */
+    .card__price {
+      margin-top: auto;
+      display: flex;
+      align-items: baseline;
+      gap: 1px;
+      font-weight: 800;
+      font-size: 1.15rem;
+      color: var(--dark);
+    }
+    .card__price-sup  { font-size: .62em; font-weight: 800; vertical-align: super; }
+    .card__price-cents{ font-size: .72em; font-weight: 700; }
+
+    /* ════════════════════════════════════════════════════════
+       RESPONSIVE
+    ════════════════════════════════════════════════════════ */
+    @media (max-width: 960px) {
+      .product-card { flex: 0 0 190px; }
+    }
+    @media (max-width: 640px) {
+      .product-card { flex: 0 0 160px; }
+      .card__img-wrap { height: 140px; }
+      .section__title { font-size: 1.2rem; }
+      .carousel-btn { display: none; } /* swipe-only on mobile */
+    }
+  </style>
+</head>
+
+<body>
+<main class="page">
+
+  <!-- ══════════════════════════════════════════════════════
+       1.  DESIGNER BAGS
+  ══════════════════════════════════════════════════════ -->
+  <section class="section" aria-labelledby="designer-bags-heading">
+
+    <div class="section__header">
+      <h2 class="section__title" id="designer-bags-heading">Designer Bags</h2>
+      <a href="#" class="see-all">See all &nbsp;→</a>
+    </div>
+
+    <div class="carousel-outer">
+      <ul class="carousel-track" id="bagsTrack">
+
+        <!-- Card 1 -->
+        <li class="product-card">
+          <div class="card__badge-row"><!-- no badge --></div>
+          <div class="card__img-wrap">
+            <img
+              src="https://placehold.co/140x120/f3f4f6/9ca3af?text=Balenciaga"
+              alt="Balenciaga Glitter Fabric XX Flap Shoulder Bag"
+            />
+          </div>
+          <div class="card__body">
+            <p class="card__title">Balenciaga Glitter Fabric XX Flap Shoulder Bag -…</p>
+            <div class="card__price">
+              <span class="card__price-sup">$</span>556
+              <span class="card__price-cents">.99</span>
+            </div>
+          </div>
+        </li>
+
+        <!-- Card 2 -->
+        <li class="product-card">
+          <div class="card__badge-row"><!-- no badge --></div>
+          <div class="card__img-wrap">
+            <img
+              src="https://placehold.co/140x120/f3f4f6/9ca3af?text=Louis+Vuitton"
+              alt="Louis Vuitton Limited Edition Monogram"
+            />
+          </div>
+          <div class="card__body">
+            <p class="card__title">Louis Vuitton Limited Edition Monogram…</p>
+            <div class="card__price">
+              <span class="card__price-sup">$</span>627
+              <span class="card__price-cents">.99</span>
+            </div>
+          </div>
+        </li>
+
+        <!-- Card 3 -->
+        <li class="product-card">
+          <div class="card__badge-row"><!-- no badge --></div>
+          <div class="card__img-wrap">
+            <img
+              src="https://placehold.co/140x120/f3f4f6/9ca3af?text=LV+Taurillon"
+              alt="Louis Vuitton Monogram Taurillon Utility Side Belt"
+            />
+          </div>
+          <div class="card__body">
+            <p class="card__title">Louis Vuitton Monogram Taurillon Utility Side Bel…</p>
+            <div class="card__price">
+              <span class="card__price-sup">$</span>1,178
+              <span class="card__price-cents">.99</span>
+            </div>
+          </div>
+        </li>
+
+        <!-- Card 4 -->
+        <li class="product-card">
+          <div class="card__badge-row"><!-- no badge --></div>
+          <div class="card__img-wrap">
+            <img
+              src="https://placehold.co/140x120/f3f4f6/9ca3af?text=Chanel"
+              alt="Chanel Vintage Lambskin Classic Medium Double"
+            />
+          </div>
+          <div class="card__body">
+            <p class="card__title">Chanel Vintage Lambskin Classic Medium Double…</p>
+            <div class="card__price">
+              <span class="card__price-sup">$</span>4,888
+              <span class="card__price-cents">.99</span>
+            </div>
+          </div>
+        </li>
+
+        <!-- Card 5 -->
+        <li class="product-card">
+          <div class="card__badge-row"><!-- no badge --></div>
+          <div class="card__img-wrap">
+            <img
+              src="https://placehold.co/140x120/f3f4f6/9ca3af?text=Saint+Laurent"
+              alt="Saint Laurent Calfskin Monogram Kaia Mini"
+            />
+          </div>
+          <div class="card__body">
+            <p class="card__title">Saint Laurent Calfskin Monogram Kaia Mini…</p>
+            <div class="card__price">
+              <span class="card__price-sup">$</span>898
+              <span class="card__price-cents">.99</span>
+            </div>
+          </div>
+        </li>
+
+        <!-- Card 6 (off-screen, revealed on scroll) -->
+        <li class="product-card">
+          <div class="card__badge-row"><!-- no badge --></div>
+          <div class="card__img-wrap">
+            <img
+              src="https://placehold.co/140x120/f3f4f6/9ca3af?text=Gucci"
+              alt="Gucci GG Marmont Small Shoulder Bag"
+            />
+          </div>
+          <div class="card__body">
+            <p class="card__title">Gucci GG Marmont Small Matelassé Shoulder Bag…</p>
+            <div class="card__price">
+              <span class="card__price-sup">$</span>1,350
+              <span class="card__price-cents">.00</span>
+            </div>
+          </div>
+        </li>
+
+      </ul>
+
+      <button
+        class="carousel-btn"
+        aria-label="Next Designer Bags"
+        onclick="scrollNext('bagsTrack')"
+      >›</button>
+    </div>
+
+  </section>
+
+
+  <!-- ══════════════════════════════════════════════════════
+       2.  SPORTS
+  ══════════════════════════════════════════════════════ -->
+  <section class="section" aria-labelledby="sports-heading">
+
+    <div class="section__header">
+      <h2 class="section__title" id="sports-heading">Sports</h2>
+      <a href="#" class="see-all">See all &nbsp;→</a>
+    </div>
+
+    <div class="carousel-outer">
+      <ul class="carousel-track" id="sportsTrack">
+
+        <!-- Card 1 -->
+        <li class="product-card">
+          <div class="card__badge-row"><!-- no badge --></div>
+          <div class="card__img-wrap">
+            <img
+              src="https://placehold.co/140x120/f3f4f6/9ca3af?text=TaylorMade"
+              alt="TaylorMade STEALTH 2 HD Fairway Wood"
+            />
+          </div>
+          <div class="card__body">
+            <p class="card__title">TaylorMade STEALTH 2 HD Fairway Wood Wome…</p>
+            <div class="card__price">
+              <span class="card__price-sup">$</span>62
+              <span class="card__price-cents">.48</span>
+            </div>
+          </div>
+        </li>
+
+        <!-- Card 2 -->
+        <li class="product-card">
+          <div class="card__badge-row"><!-- no badge --></div>
+          <div class="card__img-wrap">
+            <img
+              src="https://placehold.co/140x120/f3f4f6/9ca3af?text=Hurley+Bike"
+              alt="Hurley Bikes Stowaway Multi-Speed"
+            />
+          </div>
+          <div class="card__body">
+            <p class="card__title">Hurley Hurley Bikes Stowaway Multi-Speed…</p>
+            <div class="card__price">
+              <span class="card__price-sup">$</span>822
+              <span class="card__price-cents">.04</span>
+            </div>
+          </div>
+        </li>
+
+        <!-- Card 3 -->
+        <li class="product-card">
+          <div class="card__badge-row"><!-- no badge --></div>
+          <div class="card__img-wrap">
+            <img
+              src="https://placehold.co/140x120/f3f4f6/9ca3af?text=Titleist+TSR3"
+              alt="Titleist TSR3 Driver Golf Club Left Handed 11°"
+            />
+          </div>
+          <div class="card__body">
+            <p class="card__title">Titleist TSR3 Driver - Golf Club - Left Handed - 11°…</p>
+            <div class="card__price">
+              <span class="card__price-sup">$</span>225
+              <span class="card__price-cents">.48</span>
+            </div>
+          </div>
+        </li>
+
+        <!-- Card 4 -->
+        <li class="product-card">
+          <div class="card__badge-row"><!-- no badge --></div>
+          <div class="card__img-wrap">
+            <img
+              src="https://placehold.co/140x120/f3f4f6/9ca3af?text=Titleist+TSR1"
+              alt="Titleist TSR1 Driver Women Golf Club Left"
+            />
+          </div>
+          <div class="card__body">
+            <p class="card__title">Titleist TSR1 Driver Women - Golf Club - Left…</p>
+            <div class="card__price">
+              <span class="card__price-sup">$</span>251
+              <span class="card__price-cents">.48</span>
+            </div>
+          </div>
+        </li>
+
+        <!-- Card 5 -->
+        <li class="product-card">
+          <div class="card__badge-row"><!-- no badge --></div>
+          <div class="card__img-wrap">
+            <img
+              src="https://placehold.co/140x120/f3f4f6/9ca3af?text=Edel+Wedge"
+              alt="Edel Trapper Wedge Golf Club Lob Wedge 60°"
+            />
+          </div>
+          <div class="card__body">
+            <p class="card__title">Edel Trapper Wedge - Golf Club - Lob Wedge - 60°…</p>
+            <div class="card__price">
+              <span class="card__price-sup">$</span>101
+              <span class="card__price-cents">.48</span>
+            </div>
+          </div>
+        </li>
+
+        <!-- Card 6 (off-screen) -->
+        <li class="product-card">
+          <div class="card__badge-row"><!-- no badge --></div>
+          <div class="card__img-wrap">
+            <img
+              src="https://placehold.co/140x120/f3f4f6/9ca3af?text=Callaway"
+              alt="Callaway Rogue ST MAX Driver"
+            />
+          </div>
+          <div class="card__body">
+            <p class="card__title">Callaway Rogue ST MAX Driver - Right Handed…</p>
+            <div class="card__price">
+              <span class="card__price-sup">$</span>189
+              <span class="card__price-cents">.99</span>
+            </div>
+          </div>
+        </li>
+
+      </ul>
+
+      <button
+        class="carousel-btn"
+        aria-label="Next Sports products"
+        onclick="scrollNext('sportsTrack')"
+      >›</button>
+    </div>
+
+  </section>
+
+
+  <!-- ══════════════════════════════════════════════════════
+       3.  TOOLS
+  ══════════════════════════════════════════════════════ -->
+  <section class="section" aria-labelledby="tools-heading">
+
+    <div class="section__header">
+      <h2 class="section__title" id="tools-heading">Tools</h2>
+      <a href="#" class="see-all">See all &nbsp;→</a>
+    </div>
+
+    <div class="carousel-outer">
+      <ul class="carousel-track" id="toolsTrack">
+
+        <!-- Card 1 -->
+        <li class="product-card">
+          <div class="card__badge-row"><!-- no badge --></div>
+          <div class="card__img-wrap">
+            <img
+              src="https://placehold.co/140x120/f3f4f6/9ca3af?text=Troy-Bilt"
+              alt="Troy-Bilt Pony 250cc Rear Tine Tiller Red"
+            />
+          </div>
+          <div class="card__body">
+            <p class="card__title">Troy-Bilt Pony 250cc Rear Tine Tiller - Red</p>
+            <div class="card__price">
+              <span class="card__price-sup">$</span>1,308
+              <span class="card__price-cents">.98</span>
+            </div>
+          </div>
+        </li>
+
+        <!-- Card 2 -->
+        <li class="product-card">
+          <div class="card__badge-row"><!-- no badge --></div>
+          <div class="card__img-wrap">
+            <img
+              src="https://placehold.co/140x120/f3f4f6/9ca3af?text=Simpson"
+              alt="Simpson Strong-Tie WT8-R50 Wedge Tie"
+            />
+          </div>
+          <div class="card__body">
+            <p class="card__title">Simpson Strong-Tie WT8-R50 Wedge Tie for 2x…</p>
+            <div class="card__price">
+              <span class="card__price-sup">$</span>219
+              <span class="card__price-cents">.47</span>
+            </div>
+          </div>
+        </li>
+
+        <!-- Card 3 -->
+        <li class="product-card">
+          <div class="card__badge-row"><!-- no badge --></div>
+          <div class="card__img-wrap">
+            <img
+              src="https://placehold.co/140x120/f3f4f6/9ca3af?text=Ridgid"
+              alt="Ridgid JobMax 18-Volt Tool-Free Multi-Tool Head"
+            />
+          </div>
+          <div class="card__body">
+            <p class="card__title">Ridgid JobMax 18-Volt Tool-Free Multi-Tool Hea…</p>
+            <div class="card__price">
+              <span class="card__price-sup">$</span>61
+              <span class="card__price-cents">.48</span>
+            </div>
+          </div>
+        </li>
+
+        <!-- Card 4 -->
+        <li class="product-card">
+          <div class="card__badge-row"><!-- no badge --></div>
+          <div class="card__img-wrap">
+            <img
+              src="https://placehold.co/140x120/f3f4f6/9ca3af?text=Simpson+DS"
+              alt="Simpson Strong Tie DSVT158S #8 1-5/8 DS"
+            />
+          </div>
+          <div class="card__body">
+            <p class="card__title">Simpson Strong Tie DSVT158S #8 1-5/8" DS…</p>
+            <div class="card__price">
+              <span class="card__price-sup">$</span>136
+              <span class="card__price-cents">.99</span>
+            </div>
+          </div>
+        </li>
+
+        <!-- Card 5 -->
+        <li class="product-card">
+          <div class="card__badge-row"><!-- no badge --></div>
+          <div class="card__img-wrap">
+            <img
+              src="https://placehold.co/140x120/f3f4f6/9ca3af?text=Johnson"
+              alt="Johnson Level & Tool 40-6705 One-Sided Laser"
+            />
+          </div>
+          <div class="card__body">
+            <p class="card__title">Johnson Level &amp; Tool 40-6705 One-Sided Laser…</p>
+            <div class="card__price">
+              <span class="card__price-sup">$</span>125
+              <span class="card__price-cents">.30</span>
+            </div>
+          </div>
+        </li>
+
+        <!-- Card 6 (off-screen) -->
+        <li class="product-card">
+          <div class="card__badge-row"><!-- no badge --></div>
+          <div class="card__img-wrap">
+            <img
+              src="https://placehold.co/140x120/f3f4f6/9ca3af?text=DeWalt"
+              alt="DeWalt 20V MAX Cordless Drill Driver Kit"
+            />
+          </div>
+          <div class="card__body">
+            <p class="card__title">DeWalt 20V MAX Cordless Drill Driver Kit…</p>
+            <div class="card__price">
+              <span class="card__price-sup">$</span>98
+              <span class="card__price-cents">.00</span>
+            </div>
+          </div>
+        </li>
+
+      </ul>
+
+      <button
+        class="carousel-btn"
+        aria-label="Next Tools products"
+        onclick="scrollNext('toolsTrack')"
+      >›</button>
+    </div>
+
+  </section>
+
+
+  <!-- ══════════════════════════════════════════════════════
+       4.  FASHION
+  ══════════════════════════════════════════════════════ -->
+  <section class="section" aria-labelledby="fashion-heading">
+
+    <div class="section__header">
+      <h2 class="section__title" id="fashion-heading">Fashion</h2>
+      <a href="#" class="see-all">See all &nbsp;→</a>
+    </div>
+
+    <div class="carousel-outer">
+      <ul class="carousel-track" id="fashionTrack">
+
+        <!-- Card 1 -->
+        <li class="product-card">
+          <div class="card__badge-row"><!-- no badge --></div>
+          <div class="card__img-wrap">
+            <img
+              src="https://placehold.co/140x120/f3f4f6/9ca3af?text=Stella+McC"
+              alt="Stella McCartney Falabella Heart"
+            />
+          </div>
+          <div class="card__body">
+            <p class="card__title">Stella McCartney Falabella Heart…</p>
+            <div class="card__price">
+              <span class="card__price-sup">$</span>445
+              <span class="card__price-cents">.99</span>
+            </div>
+          </div>
+        </li>
+
+        <!-- Card 2 -->
+        <li class="product-card">
+          <div class="card__badge-row"><!-- no badge --></div>
+          <div class="card__img-wrap">
+            <img
+              src="https://placehold.co/140x120/f3f4f6/9ca3af?text=Valentino"
+              alt="Valentino Grainy Calfskin VLogo"
+            />
+          </div>
+          <div class="card__body">
+            <p class="card__title">Valentino Valentino Grainy Calfskin VLogo…</p>
+            <div class="card__price">
+              <span class="card__price-sup">$</span>777
+              <span class="card__price-cents">.99</span>
+            </div>
+          </div>
+        </li>
+
+        <!-- Card 3 -->
+        <li class="product-card">
+          <div class="card__badge-row"><!-- no badge --></div>
+          <div class="card__img-wrap">
+            <img
+              src="https://placehold.co/140x120/f3f4f6/9ca3af?text=Gucci+GG"
+              alt="Gucci Calfskin Petite GG Mini Shoulder Bag"
+            />
+          </div>
+          <div class="card__body">
+            <p class="card__title">Gucci Calfskin Petite GG Mini Shoulder Bag -…</p>
+            <div class="card__price">
+              <span class="card__price-sup">$</span>1,198
+              <span class="card__price-cents">.99</span>
+            </div>
+          </div>
+        </li>
+
+        <!-- Card 4 -->
+        <li class="product-card">
+          <div class="card__badge-row"><!-- no badge --></div>
+          <div class="card__img-wrap">
+            <img
+              src="https://placehold.co/140x120/f3f4f6/9ca3af?text=MCM"
+              alt="MCM Visetos Stark Small Backpack Coated"
+            />
+          </div>
+          <div class="card__body">
+            <p class="card__title">MCM Visetos Stark Small Backpack - Coated…</p>
+            <div class="card__price">
+              <span class="card__price-sup">$</span>475
+              <span class="card__price-cents">.99</span>
+            </div>
+          </div>
+        </li>
+
+        <!-- Card 5 -->
+        <li class="product-card">
+          <div class="card__badge-row"><!-- no badge --></div>
+          <div class="card__img-wrap">
+            <img
+              src="https://placehold.co/140x120/f3f4f6/9ca3af?text=Three+Sixty"
+              alt="Three Sixty Six Women's Collarless Floral Golf Polo"
+            />
+          </div>
+          <div class="card__body">
+            <p class="card__title">Three Sixty Six Women's Collarless Floral Golf Pol…</p>
+            <div class="card__price">
+              <span class="card__price-sup">$</span>34
+              <span class="card__price-cents">.94</span>
+            </div>
+          </div>
+        </li>
+
+        <!-- Card 6 (off-screen) -->
+        <li class="product-card">
+          <div class="card__badge-row"><!-- no badge --></div>
+          <div class="card__img-wrap">
+            <img
+              src="https://placehold.co/140x120/f3f4f6/9ca3af?text=Prada"
+              alt="Prada Re-Nylon Backpack"
+            />
+          </div>
+          <div class="card__body">
+            <p class="card__title">Prada Re-Nylon Backpack - Black…</p>
+            <div class="card__price">
+              <span class="card__price-sup">$</span>890
+              <span class="card__price-cents">.00</span>
+            </div>
+          </div>
+        </li>
+
+      </ul>
+
+      <button
+        class="carousel-btn"
+        aria-label="Next Fashion products"
+        onclick="scrollNext('fashionTrack')"
+      >›</button>
+    </div>
+
+  </section>
+
+</main>
+
+<!-- ════════════════════════════════════════════════════════
+     JAVASCRIPT – scroll one card at a time
+════════════════════════════════════════════════════════ -->
+<script>
+  function scrollNext(trackId) {
+    const track = document.getElementById(trackId);
+    if (!track) return;
+    const card      = track.querySelector('.product-card');
+    const cardWidth = card.offsetWidth + 14; // card width + gap
+    track.scrollBy({ left: cardWidth, behavior: 'smooth' });
+  }
+</script>
+
+</body>
+</html>

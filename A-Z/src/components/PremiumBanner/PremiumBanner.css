@@ -1,0 +1,83 @@
+.premium-banner {
+  background: linear-gradient(135deg, #ccfbf1 0%, #99f6e4 100%);
+  border-radius: 20px;
+  padding: 48px 56px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 40px;
+  position: relative;
+  overflow: hidden;
+}
+
+.premium-banner::before {
+  content: "";
+  position: absolute;
+  top: -60px;
+  right: -60px;
+  width: 220px;
+  height: 220px;
+  background: rgba(255, 255, 255, 0.35);
+  border-radius: 50%;
+}
+
+.premium-banner__logo {
+  position: absolute;
+  top: 24px;
+  right: 24px;
+  width: 52px;
+  height: 52px;
+  background: var(--dark);
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+}
+
+.premium-banner__logo svg {
+  fill: #fff;
+}
+
+.premium-banner__title {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: var(--dark);
+  line-height: 1.2;
+}
+
+.trustpilot-inline {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 12px;
+  font-weight: 600;
+}
+
+.perks {
+  background: #fff;
+  border-radius: 14px;
+  padding: 28px 32px;
+  min-width: 280px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.perk-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--dark);
+}
+
+.perk-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background: var(--gray-light);
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  font-size: 1rem;
+}
